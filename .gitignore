@@ -4,3 +4,4 @@ myenv
 *.swp
 db.sqlite3
 __pycache__db.sqlite3
+static/docs
