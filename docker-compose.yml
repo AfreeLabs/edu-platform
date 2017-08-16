@@ -1,0 +1,19 @@
+version: '3'
+services:
+  edu-api:
+    build: .
+    image: edu-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/code
+    links:
+      - db
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: secret 
+    command: start_dev
+
+  db:
+    image: postgres:9.5
+
