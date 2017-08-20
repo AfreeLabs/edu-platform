@@ -14,7 +14,7 @@ show_help() {
   """
 }
 
-export PYTHONPATH="/opt/app:$PYTHONPATH"
+export PYTHONPATH="/code/:$PYTHONPATH"
 export DJANGO_SETTINGS_MODULE=eduproject.settings
 
 case "$1" in
@@ -38,7 +38,7 @@ case "$1" in
     ./manage.py runserver 0.0.0.0:8080
   ;;
   "start_jupyter" )
-    jupyter notebook -y --no-browser --ip=0.0.0.0 --config=/opt/notebooks/jupyter_notebook_config.py --notebook-dir=/opt/notebooks/
+    jupyter notebook -y --no-browser --ip=0.0.0.0 --config=/code/notebooks/jupyter_notebook_config.py --notebook-dir=/code/notebooks/
   ;;
   "manage" )
     ./manage.py "${@:2}"

@@ -1,30 +1,21 @@
+import random
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django_countries.fields import CountryField
 from school.models import Batch, School
 from department.models import Department, ClassLevel
 
-import datetime
-
-# Create your models here.
 SELECT_GENDER = (
         ('male', 'Male'), ('female', 'Female'),(None, 'Select Gender')
         )
-
-def registration_number():
-    today_year = datetime.date.today().year
-    last_reg = Registration.objects.latest('id')
-    if not last_reg:
-        return("Reg/%d/%08d" % (today_year, 1))
-    last_id = last_reg.id
-    current_id = int(last_id) + 1
-    return ("Reg/%d/%08d" % (today_year, current_id))
 
 
 class Registration(models.Model):
     """
     Model representing a person(e.g. mohamed jalloh).
     """
-    registration_number = models.CharField(max_length=20, default=registration_number, unique=True, editable=False)
+    registration_number = models.PositiveIntegerField(default=0)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
@@ -49,26 +40,17 @@ class Registration(models.Model):
         """
         String for representing the Model object.
         """
-        return '%s, %s' % (self.last_name, self.first_name)
+        return '{0}, {1}'.format(self.last_name, self.first_name)
 
 
-def student_number():
-    school = School.objects.get(pk=1)
-    if not school:
-        raise("there should be a school")
-    school_abbr = school.abreviation
-    school_str = school_abbr[:2]
-    today_year = datetime.date.today().year
-    last_student = Admission.objects.latest('id')
-    if not last_student:
-        return("%s/%d/%08d" % (school_str, today_year, 1))
-    last_id = last_student.id
-    current_id = int(last_id) + 1
-    return("%s/%d/%08d" % (school_str, today_year, 1))
+@receiver(pre_save, sender=Registration)
+def increase_registration_number(sender, instance, *args, **kwargs):
+    instance.registration_number += 1
+
 
 
 class Admission(models.Model):
-    student_card_number = models.CharField(max_length=20, default= student_number, unique=True, editable=False)
+    student_card_number = models.PositiveIntegerField(default=0)
     date = models.DateField()
     batch = models.ForeignKey(Batch)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
@@ -81,3 +63,8 @@ class Admission(models.Model):
         String for representing the Model object.
         """
         return (self.registree.first_name)
+
+
+@receiver(pre_save, sender=Admission)
+def generate_student_card(sendder, instance, *args, **kwargs):
+    instance.student_card_number = random.randrange(1000, 9000)
