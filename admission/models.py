@@ -16,17 +16,18 @@ class Registration(models.Model):
     Model representing a person(e.g. mohamed jalloh).
     """
     registration_number = models.PositiveIntegerField(default=0)
+    date = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     photo = models.ImageField(null=True, blank=True)
     date_of_birth = models.DateField()
     place_of_birth = models.CharField(max_length=100)
-    genre = models.CharField(max_length=32, choices=SELECT_GENDER)
+    gender = models.CharField(max_length=32, choices=SELECT_GENDER)
     nationality = CountryField(blank_label='(select country)')
     father_name = models.CharField(max_length=200)
     mother_name = models.CharField(max_length=200)
-    adress = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=32)
     email = models.CharField(max_length=100, null=True, blank=True)
     id_card_number = models.CharField(max_length=64)
@@ -50,8 +51,8 @@ def increase_registration_number(sender, instance, *args, **kwargs):
 
 
 class Admission(models.Model):
-    student_card_number = models.PositiveIntegerField(default=0)
-    date = models.DateField()
+    student_card_number = models.CharField(max_length=50)
+    date = models.DateTimeField(auto_now_add=True)
     batch = models.ForeignKey(Batch)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     registree = models.OneToOneField(Registration)
@@ -67,4 +68,8 @@ class Admission(models.Model):
 
 @receiver(pre_save, sender=Admission)
 def generate_student_card(sendder, instance, *args, **kwargs):
-    instance.student_card_number = random.randrange(1000, 9000)
+    prefix = '0000'
+    if Admission.objects.last():
+        instance.student_card_number = prefix + str(Admission.objects.last().id)
+    else:
+        instance.student_card_number = prefix + '1'
