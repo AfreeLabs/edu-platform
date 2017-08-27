@@ -4,14 +4,14 @@ from .models import Account
 
 
 # Serialize User Credentials
-class AccountSerializer(serializers.ModelSerializer):
+class AccountSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Account
         fields = (
-            'id', 'email', 'first_name', 'last_name', 'created_at', 'updated_at',
+            'url','id', 'email', 'first_name', 'last_name', 'created_at', 'updated_at',
             'password', 'confirm_password'
         )
         read_only_fields = ('created_at', 'updated_at')

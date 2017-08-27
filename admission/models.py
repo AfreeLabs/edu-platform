@@ -1,4 +1,3 @@
-import random
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -9,7 +8,6 @@ from department.models import Department, ClassLevel
 SELECT_GENDER = (
         ('male', 'Male'), ('female', 'Female'),(None, 'Select Gender')
         )
-
 
 class Registration(models.Model):
     """
@@ -47,7 +45,6 @@ class Registration(models.Model):
 @receiver(pre_save, sender=Registration)
 def increase_registration_number(sender, instance, *args, **kwargs):
     instance.registration_number += 1
-
 
 
 class Admission(models.Model):

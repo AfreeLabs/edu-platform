@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from .models import Timetable
 from .serializers import TimetableSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 

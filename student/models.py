@@ -9,7 +9,7 @@ class Student(models.Model):
 
 
     def __str__(self):
-        return '%s, department of %s' % (self.student.first_name, self.class_level)
+        return '%s, department of %s' % (self.student.registree.first_name, self.student.class_level)
 
 
 
@@ -24,7 +24,6 @@ class Exam(models.Model):
 
 
 class Grade(models.Model):
-    name = models.CharField(max_length=100)
     Grade_1 = models.IntegerField()
     Grade_2 = models.IntegerField()
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)

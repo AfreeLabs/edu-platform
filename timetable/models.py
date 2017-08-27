@@ -21,7 +21,7 @@ class Timetable(models.Model):
     name = models.CharField(max_length=64)
     day = models.CharField(max_length=64)
     timing = models.CharField(max_length=32) #like '08AM-10AM' or '8h-10h'
-    classLevel = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
+    class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
     Teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     classroom = models.ForeignKey(Room, on_delete=models.CASCADE)

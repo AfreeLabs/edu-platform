@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import Student, Exam, Grade, Payment
 from .serializers import StudentSerializer, ExamSerializer, GradeSerializer, PaymentSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 

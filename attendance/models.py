@@ -7,7 +7,7 @@ from student.models import Subject, Student
 class Attendance(models.Model):
     name = models.CharField(max_length=64)
     date = models.DateField()
-    classLevel = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
+    class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     present = models.BooleanField('Present?', default=True)

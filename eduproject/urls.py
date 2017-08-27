@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
+from accounts.urls import router as accounts_router
 from school.urls import router as school_router 
 from admission.urls import router as admission_router
 from attendance.urls import router as attendance_router
@@ -27,6 +28,7 @@ from timetable.urls import router as timetable_router
 
 
 urlpatterns = [
+    url(r'^api/accounts/', include(accounts_router.urls)),
     url(r'^api/school/', include(school_router.urls)),
     url(r'^api/admission/', include(admission_router.urls)),
     url(r'^api/attendance/', include(attendance_router.urls)),

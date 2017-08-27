@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from .models import Registration, Admission
 from .serializers import RegistrationSerializer, AdmissionSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 # from rest_framework.views import APIView

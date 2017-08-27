@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import School, Batch
 from .serializers import SchoolSerializer, BatchSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import Employee, Teacher
 from .serializers import TeacherSerializer, EmployeeSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 

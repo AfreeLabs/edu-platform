@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import ClassLevel, Department, Room, Subject
 from .serializers import ClasslevelSerializer, DepartmentSerializer, RoomSerializer, SubjectSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAccountOwner
 
 from rest_framework import viewsets, permissions
 
