@@ -1,46 +1,31 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django_countries.fields import CountryField
 from school.models import Batch, School
 from department.models import Department, ClassLevel
 
-import datetime
-
-# Create your models here.
 SELECT_GENDER = (
         ('male', 'Male'), ('female', 'Female'),(None, 'Select Gender')
         )
-
-# help create a "isc/2017/00000002" format registration number
-def registration_number():
-    current_year = datetime.date.today().year
-    try:
-        last_reg = Registration.objects.latest('id')
-    except Registration.DoesNotExist:
-        last_reg = None
-    
-    if not last_reg:
-        return("Reg-%d-%08d" % (current_year, 1))
-    last_id = last_reg.id
-    current_id = int(last_id) + 1
-    return ("Reg-%d-%08d" % (current_year, current_id))
-
 
 class Registration(models.Model):
     """
     Model representing a person(e.g. mohamed jalloh).
     """
-    registration_number = models.CharField(max_length=20, default=registration_number, unique=True, editable=False)
+    registration_number = models.PositiveIntegerField(default=0)
+    date = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     photo = models.ImageField(null=True, blank=True)
     date_of_birth = models.DateField()
     place_of_birth = models.CharField(max_length=100)
-    genre = models.CharField(max_length=32, choices=SELECT_GENDER)
+    gender = models.CharField(max_length=32, choices=SELECT_GENDER)
     nationality = CountryField(blank_label='(select country)')
     father_name = models.CharField(max_length=200)
     mother_name = models.CharField(max_length=200)
-    adress = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=32)
     email = models.CharField(max_length=100, null=True, blank=True)
     id_card_number = models.CharField(max_length=64)
@@ -54,32 +39,17 @@ class Registration(models.Model):
         """
         String for representing the Model object.
         """
-        return '%s, %s' % (self.last_name, self.first_name)
+        return '{0}, {1}'.format(self.last_name, self.first_name)
 
 
-# help create a "isc/2017/00000002" format student number
-def student_number():
-    school = School.objects.get(pk=1)
-    if not school:
-        raise("there should be a school")
-    school_abbr = school.abreviation
-    school_str = school_abbr[:2]
-    current_year = datetime.date.today().year
-    try:
-         last_student = Admission.objects.latest('id')
-    except Admission.DoesNotExist:
-        last_student = None
-   
-    if not last_student:
-        return("%s/%d/%08d" % (school_str, current_year, 1))
-    last_id = last_student.id
-    current_id = int(last_id) + 1
-    return("%s/%d/%08d" % (school_str, current_year, 1))
+@receiver(pre_save, sender=Registration)
+def increase_registration_number(sender, instance, *args, **kwargs):
+    instance.registration_number += 1
 
 
 class Admission(models.Model):
-    student_card_number = models.CharField(max_length=20, default= student_number, unique=True, editable=False)
-    date = models.DateField()
+    student_card_number = models.CharField(max_length=50)
+    date = models.DateTimeField(auto_now_add=True)
     batch = models.ForeignKey(Batch)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     registree = models.OneToOneField(Registration)
@@ -91,3 +61,12 @@ class Admission(models.Model):
         String for representing the Model object.
         """
         return (self.registree.first_name)
+
+
+@receiver(pre_save, sender=Admission)
+def generate_student_card(sendder, instance, *args, **kwargs):
+    prefix = '0000'
+    if Admission.objects.last():
+        instance.student_card_number = prefix + str(Admission.objects.last().id)
+    else:
+        instance.student_card_number = prefix + '1'
